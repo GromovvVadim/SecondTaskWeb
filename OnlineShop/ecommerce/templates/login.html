@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+<div class='form-container'>
+    <h3>Authorization</h3>
+    <form action='' method='Post'>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="row justify-center">
+            <input type='submit' class='btn btn-info shadow-none' value='Sign in'>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
