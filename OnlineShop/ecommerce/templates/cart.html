@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+<h1>Basket</h1>
+
+{% if cart.items.count > 0 %}
+<div class="table-container">
+<table class="table cart-table">
+<tr class="table-header">
+    <td>Book</td>
+    <td>Count</td>
+    <td>Price</td>
+    <td></td>
+</tr>
+{% for item in cart.items.all %}
+<tr id="{{ item.product.slug }}">
+    <td>{{ item.product.brand }} {{ item.product.title }}</td>
+    <td>
+        <form action="" method="GET">
+            <input class="cart-item-amount table__amount" data-id="{{ item.id }}" type="number" name="amount" value="{{ item.amount }}" min="1">
+        </form>
+    </td>
+    <td id="cart-item-total-{{ item.id }}">{{ item.total_price.normalize }} $</td>
+    <td><a class="remove_from_cart btn btn-info btn-checkout shadow-none" href="#" data-slug="{{ item.product.slug }}"  data-id="{{ item.product.id }}">Delete</a></td>
+</tr>
+{% endfor %}
+<tr>
+    <td></td>
+    <td><b>Total Sum:</b></td>
+    <td id="cart-total-price"><b>{{ cart.total_price.normalize }} $</b></td>
+    <td></td>
+</tr>
+</table>
+
+    <a class="btn btn-info btn-checkout shadow-none" href="{% url 'checkout' %}">Go to order</a>    
+</div>
+
+<h2 class="cart-empty">The cart is empty</h2>
+{% else %}
+<h2>The cart is empty</h2>
+{% endif %}
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
+
+{% endblock %}

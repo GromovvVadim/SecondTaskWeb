@@ -72,3 +72,56 @@ class ProductComment(models.Model):
     date = models.DateTimeField(auto_now_add=True, verbose_name='Date')
 
 
+class CartItem(models.Model):
+    product = models.ForeignKey(
+        'Product', on_delete=models.CASCADE, verbose_name='Book')
+    amount = models.PositiveIntegerField(default=1, verbose_name='Count')
+    total_price = models.DecimalField(
+        max_digits=9, decimal_places=2, verbose_name='Price')
+
+    def __str__(self):
+        return 'CartItem ({0})'.format(self.product.title)
+
+
+class Cart(models.Model):
+    items = models.ManyToManyField(
+        'CartItem', blank=True, verbose_name='Books')
+    total_price = models.DecimalField(blank=True, default=0,
+                                      max_digits=9, decimal_places=2, verbose_name='Price')
+
+    def add_to_cart(self, product_slug):
+        product = Product.objects.get(slug=product_slug)
+        new_item, _ = CartItem.objects.get_or_create(
+            product=product, total_price=product.price)
+        if new_item not in self.items.all():
+            self.items.add(new_item)
+            self.save()
+
+    def remove_from_cart(self, product_slug):
+        product = Product.objects.get(slug=product_slug)
+        for cart_item in self.items.all():
+            if cart_item.product == product:
+                self.items.filter(product=product).delete()
+                self.save()
+
+    def change_item_amount(self, item_id, amount):
+        cart_item = CartItem.objects.get(id=int(item_id))
+        cart_item.amount = int(amount)
+        cart_item.total_price = int(amount) * float(cart_item.product.price)
+        cart_item.save()
+
+        total_sum = 0.00
+        for item in self.items.all():
+            total_sum += float(item.total_price)
+        self.total_price = total_sum
+        self.save()
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name_plural = 'Baskets'
+        verbose_name = 'Basket'
+
+
+

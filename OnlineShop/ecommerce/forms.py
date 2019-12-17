@@ -3,7 +3,7 @@
 from django import forms
 from django.utils import timezone
 from django.contrib.auth.models import User
-from .models import Product, Brand, Category
+from .models import Product, Brand, Order, Category, ProductComment
 
 
 class RegistrationForm(forms.ModelForm):
@@ -70,34 +70,30 @@ class LoginForm(forms.Form):
             raise forms.ValidationError(
                 {'password': 'The password is incorrect'}, code='password does not exist')
 
-class Product(models.Model):
-    title = models.CharField(max_length=100, verbose_name='Book')
-    category = models.ForeignKey(
-        Category, on_delete=models.PROTECT, verbose_name='Category')
-    brand = models.ForeignKey(
-        Brand, on_delete=models.CASCADE, verbose_name='Author')
-    slug = models.SlugField(max_length=100)
-    description = models.TextField(null=True, blank=True, verbose_name='Description')
-    price = models.DecimalField(
-        max_digits=9, decimal_places=2, verbose_name='Price')
-    image = models.ImageField(
-        upload_to=get_image_folder, null=True, blank=False, verbose_name='Photo')
-    is_available = models.BooleanField(
-        default=True, blank=True, verbose_name='In stock')
-    date_added = models.DateTimeField(
-        auto_now_add=True, auto_now=False, verbose_name='Added', blank=True)
 
-    def __str__(self):
-        return str(self.brand) + ' ' + str(self.title)
+class OrderForm(forms.Form):
+    name = forms.CharField()
+    surname = forms.CharField()
+    phone = forms.CharField()
+    delivery_type = forms.ChoiceField(widget=forms.Select(), choices=(
+        [("self", "Pickup by myself"), ("delivery", "Delivery")]))
+    date = forms.DateField(
+        widget=forms.SelectDateWidget(), initial=timezone.now())
+    address = forms.CharField(required=False)
+    comment = forms.CharField(widget=forms.Textarea, required=False)
 
-    def get_absolute_url(self):
-        return reverse("product_detail", kwargs={"product_slug": self.slug})
-
-    class Meta:
-        verbose_name_plural = 'Books'
-        verbose_name = 'Book'
-        ordering = ['title']
-
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = "First Name"
+        self.fields['surname'].label = 'Second Name'
+        self.fields['phone'].label = 'Phone number'
+        self.fields['phone'].help_text = "Input real number"
+        self.fields['delivery_type'].label = 'The method of obtaining'
+        self.fields['address'].label = 'Delivery address'
+        #self.fields['address'].help_text = 'Input real address'
+        self.fields['comment'].label = 'Order comment'
+        self.fields['date'].label = 'Delivery date'
+        self.fields['date'].help_text = 'Delivery takes 2-4 days'
 
 
 class ProductForm(forms.ModelForm):
@@ -125,8 +121,8 @@ class CategoryForm(forms.ModelForm):
         fields = ['name', 'slug']
 
 
-class ProductComment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
-    comment = models.TextField(verbose_name='Comment')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Book')
-    date = models.DateTimeField(auto_now_add=True, verbose_name='Date')
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = ProductComment
+        fields = ['comment']
