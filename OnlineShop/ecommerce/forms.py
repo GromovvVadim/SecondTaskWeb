@@ -70,6 +70,34 @@ class LoginForm(forms.Form):
             raise forms.ValidationError(
                 {'password': 'The password is incorrect'}, code='password does not exist')
 
+class Product(models.Model):
+    title = models.CharField(max_length=100, verbose_name='Book')
+    category = models.ForeignKey(
+        Category, on_delete=models.PROTECT, verbose_name='Category')
+    brand = models.ForeignKey(
+        Brand, on_delete=models.CASCADE, verbose_name='Author')
+    slug = models.SlugField(max_length=100)
+    description = models.TextField(null=True, blank=True, verbose_name='Description')
+    price = models.DecimalField(
+        max_digits=9, decimal_places=2, verbose_name='Price')
+    image = models.ImageField(
+        upload_to=get_image_folder, null=True, blank=False, verbose_name='Photo')
+    is_available = models.BooleanField(
+        default=True, blank=True, verbose_name='In stock')
+    date_added = models.DateTimeField(
+        auto_now_add=True, auto_now=False, verbose_name='Added', blank=True)
+
+    def __str__(self):
+        return str(self.brand) + ' ' + str(self.title)
+
+    def get_absolute_url(self):
+        return reverse("product_detail", kwargs={"product_slug": self.slug})
+
+    class Meta:
+        verbose_name_plural = 'Books'
+        verbose_name = 'Book'
+        ordering = ['title']
+
 
 
 class ProductForm(forms.ModelForm):
@@ -95,3 +123,10 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'slug']
+
+
+class ProductComment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
+    comment = models.TextField(verbose_name='Comment')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Book')
+    date = models.DateTimeField(auto_now_add=True, verbose_name='Date')

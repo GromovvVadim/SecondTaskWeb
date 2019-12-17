@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
    
-
+    path('category/<str:category_slug>', category_view, name='category_detail'),
     path('registration/', registration_view, name='registration'),
     path('authorization/', login_view, name='login'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('base')), name='logout'),

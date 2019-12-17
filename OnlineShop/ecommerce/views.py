@@ -121,3 +121,16 @@ def registration_view(request):
     }
     return render(request, 'registration.html', context)
 
+@login_required
+def add_comment(request, product_slug):
+    comment = request.POST.get('comment')
+    product = Product.objects.get(slug=product_slug)
+    new_comment = ProductComment()
+    new_comment.user = request.user
+    new_comment.comment = comment
+    new_comment.product = product
+    new_comment.save()
+
+    comments = ProductComment.objects.filter(product=product)
+
+    return HttpResponseRedirect(reverse('product_detail', kwargs={'product_slug': product_slug}))

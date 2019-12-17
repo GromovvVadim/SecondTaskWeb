@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+<div class="category-header">
+    <h1 class="category-header__title">{{ category.name }}</h1>
+    <div class="category-header__sort">Sort: 
+        <form action="" method="GET">
+          <input type="hidden" name="page" value="{{page}}"/>
+            <select id="sort" name="ordering" onchange='this.form.submit()'>
+                <option value="price">Ascending price</option>
+                <option value="-price">Descending price</option>
+                <option value="title">Title</option>
+            </select>
+            <noscript><input type="submit" value="Submit"></noscript>
+        </form>
+    </div>
+</div>
+
+<div class="products category-products">
+    {% for product in category_products %}
+        <div  name="{{ product.brand }} {{ product.title }}" price="{{ product.price }}" date="product.date_added"  class="products__item category-products__item">
+            <a href="{{ product.get_absolute_url }}">
+                <img src="{{ product.image.url }}" alt="Product" class="products__img">
+            </a>
+            <h3 class="products__title">
+                <a href="{{ product.get_absolute_url }}">{{ product.title }}, {{ product.brand }}</a>
+            </h3>
+            <div class="products__price">{{ product.price.normalize }} $</div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="paginator">
+  <nav aria-label="...">
+    <ul class="pagination">
+      {% if category_products.has_previous %}
+      <li class="page-item">
+        <a class="page-link shadow-none" href="?page={{ category_products.previous_page_number }}&ordering={{ ordering }}" tabindex="-1">&#8592</a>
+      </li>
+      <li class="page-item">
+          <a class="page-link shadow-none" href="?page={{ category_products.previous_page_number }}&ordering={{ ordering }}">{{ category_products.previous_page_number }}</a>
+      </li>
+      {% endif %}
+      <li class="page-item active" aria-current="page">
+        <a class="page-link shadow-none" href="#">{{ category_products.number }}<span class="sr-only">(current)</span></a>
+      </li>
+      {% if category_products.has_next %}
+      <li class="page-item shadow-none"><a class="page-link shadow-none" href="?page={{ category_products.next_page_number }}&ordering={{ ordering }}">{{ category_products.next_page_number }}</a></li>
+      <li class="page-item shadow-none">
+        <a class="page-link shadow-none" href="?page={{ category_products.next_page_number }}&ordering={{ ordering }}">	&#8594</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
+<script src="{% static 'js/sort.js' %}"></script>
+
+{% endblock %}

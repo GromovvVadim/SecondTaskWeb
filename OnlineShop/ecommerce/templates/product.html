@@ -1,0 +1,59 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="product__title">{{ product.brand }} {{ product.title }}</h1>
+    <div class="product__info">
+        <div class="product__photo">
+            <img src="{{ product.image.url }}" alt="Product Photo">
+        </div>
+        <div class="product__details">
+            <div class="product__detail">Category: <a class="category-ref"
+                    href="{{ product.category.get_absolute_url }}">{{ product.category }} </a></div>
+            <div class="product__detail">Author: <span>{{ product.brand }}</span></div>
+            <div class="product__buy">
+                <div class="product__detail price">Ціна: <span class="price">{{ product.price.normalize }} $ <span>
+                </div>
+                <a href="#" class="buy-btn product-btn add_to_cart" data-slug="{{ product.slug }}"></a>  Buy</a>
+            </div>
+            <div class="product__description">
+                <h2>Description:</h2>
+                <p>{{ product.description }}</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-container">
+        <h3 class="title-underlined">Reviews</h3>
+        <div class="product__comments">
+            {% for comment in comments %}
+            <div class="comment">
+                <h5>{{ comment.user }}</h6>
+                    <p>{{ comment.date }}</p>
+                    <p>{{ comment.comment }}</p>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div class="form-container">
+        <form name='comment' action="{% url 'add_comment' product.slug  %}" method='POST'>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="row justify-content-center">
+                <input class="btn btn-info shadow-none" type="submit" value="Leave a comment">
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/cart.js' %}"></script>
+
+{% endblock %}
