@@ -123,5 +123,39 @@ class Cart(models.Model):
         verbose_name_plural = 'Baskets'
         verbose_name = 'Basket'
 
+ORDER_STATUSES = (
+    ('Processing', 'Processing'),
+    ('Paid', 'Paid'),
+    ('Rejected', 'Rejected')
+)
+
+DELIVERY_TYPES = (
+    ('Pickup by myself', 'Pickup by myself'),
+    ('Delivery', 'Delivery')
+)
+
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
+                             on_delete=models.CASCADE, verbose_name="Customer")
+    name = models.CharField(max_length=200, verbose_name="First Name")
+    surname = models.CharField(max_length=200, verbose_name="Second Name")
+    phone = models.CharField(max_length=20, verbose_name="Phone number")
+    address = models.CharField(
+        null=True, blank=True, max_length=255, verbose_name="Address")
+    items = models.ForeignKey(
+        Cart, on_delete=models.PROTECT, verbose_name="Books", null=True)
+    total_price = models.DecimalField(
+        max_digits=9, decimal_places=2, default=0.00, verbose_name='Price')
+    delivery_type = models.CharField(
+        max_length=100, choices=DELIVERY_TYPES, default='Pickup by myself')
+    comment = models.TextField(null=True, blank=True, verbose_name="Comment")
+    date = models.DateTimeField(
+        auto_now_add=True, auto_now=False, verbose_name="Date")
+    status = models.CharField(
+        max_length=100, choices=ORDER_STATUSES, default=ORDER_STATUSES[0][0])
+
+    def __str__(self):
+        return 'Order № ' + str(self.id)
 
 

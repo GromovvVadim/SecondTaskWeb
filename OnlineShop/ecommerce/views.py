@@ -284,14 +284,6 @@ def accept_order(request):
         del request.session['total']
     return render(request, 'thank_you.html', {})
 
-def cabinet_view(request):
-    orders = Order.objects.filter(user=request.user).order_by('-date')
-    context = {
-        'orders': orders
-    }
-    return render(request, 'cabinet.html', context)
-
-
 def login_view(request):
     form = LoginForm(request.POST or None)
     if form.is_valid():

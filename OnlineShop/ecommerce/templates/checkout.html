@@ -1,0 +1,29 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Your order</h1>
+    <div class="table-container">
+    <table class="table cart-table">
+        <tr class="table-header">
+            <td>Book</td>
+            <td>Count</td>
+            <td>Price</td>
+        </tr>
+        {% for item in cart.items.all %}
+        <tr id="{{ item.product.slug }}">
+            <td>{{ item.product.brand }}  {{ item.product.title }}</td>
+            <td>{{ item.amount }}</td>
+            <td>{{ item.total_price }} $</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td><b>Total sum:</b></td>
+            <td><b>{{ cart.total_price }} $</b></td>
+        </tr>
+    </table>
+    <a class="btn btn-info btn-checkout shadow-none" href="{% url 'create_order' %}">To order</a>    
+  </div>
+</div>
+{% endblock %}
