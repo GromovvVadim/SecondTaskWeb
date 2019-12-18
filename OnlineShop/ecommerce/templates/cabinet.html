@@ -13,7 +13,7 @@
     <td>Date</td>
     <td>Status</td>
     <td>Price</td>
-    <td>Order details</td>
+    <td>Details</td>
 </tr>
 
 {% for order in orders %}
@@ -23,9 +23,7 @@
     <td>{{ order.date }}</td>
     <td>{{ order.status }}</td>
     <td>{{ order.total_price.normalize }} $</td>
-    <td>
-      <button type="button" class="btn btn-primary shadow-none" data-toggle="modal" data-target="#exampleModal-{{ order.id }}">Show details</button>
-    </td>
+    <td><button type="button" class="btn btn-primary shadow-none" data-toggle="modal" data-target="#exampleModal-{{ order.id }}">Show details</button></td>
 </tr>
 
 {% endfor %}
@@ -47,10 +45,10 @@
       <div class="modal-body">
         
         <table class="table">
-            <h3>Purchased books</h3>
+            <h3>Books</h3>
             {% for order_item in order.items.items.all %}
                 <tr>
-                    <td>{{ order_item.product.title }}, {{order_item.product.brand}} </td>
+                    <td>{{ order_item.product.title }}</td>
                     <td>{{ order_item.amount }}</td>
                     <td>{{ order_item.total_price.normalize }} $</td>
                 </tr>

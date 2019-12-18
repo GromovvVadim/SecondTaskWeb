@@ -32,8 +32,7 @@ def base_view(request):
         'cart': cart,
     }
     return render(request, 'index.html', context)
-
-
+    
 def category_view(request, category_slug, page=1):
     try:
         cart_id = request.session['cart_id']
@@ -55,13 +54,16 @@ def category_view(request, category_slug, page=1):
     if ordering == 'title':
         category_products_list = Product.objects.filter(
             category=category).order_by('brand', 'title')
+    if ordering == 'price':
+        category_products_list = Product.objects.filter(
+            category=category).order_by('price', 'price')
     else:
         category_products_list = Product.objects.filter(
             category=category).order_by(ordering)
 
     categories = Category.objects.all()
 
-    paginator = Paginator(category_products_list, 8)
+    paginator = Paginator(category_products_list, 4)
 
     page = request.GET.get('page')
     category_products = paginator.get_page(page)
@@ -284,6 +286,37 @@ def accept_order(request):
         del request.session['total']
     return render(request, 'thank_you.html', {})
 
+
+def registration_view(request):
+    form = RegistrationForm(request.POST or None)
+    if form.is_valid():
+        new_user = form.save(commit=False)
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        email = form.cleaned_data['email']
+        first_name = form.cleaned_data['first_name']
+        last_name = form.cleaned_data['last_name']
+
+        new_user.username = username
+        new_user.set_password(password)
+        new_user.first_name = first_name
+        new_user.last_name = last_name
+        new_user.email = email
+        new_user.save()
+        return HttpResponseRedirect(reverse('base'))
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        login_user = authenticate(username=username, password=password)
+        if login_user:
+            login(request, login_user)
+            return HttpResponseRedirect(reverse('base'))
+
+    context = {
+        'form': form
+    }
+    return render(request, 'registration.html', context)
+
+
 def cabinet_view(request):
     orders = Order.objects.filter(user=request.user).order_by('-date')
     context = {
@@ -337,6 +370,36 @@ def registration_view(request):
     }
     return render(request, 'registration.html', context)
 
+@permission_required('is_staff')
+def add_product(request):
+    form = ProductForm(request.POST or None)
+    if form.is_valid():
+        new_product = form.save(commit=False)
+        title = form.cleaned_data['title']
+        category = form.cleaned_data['category']
+        brand = form.cleaned_data['brand']
+        slug = form.cleaned_data['slug']
+        description = form.cleaned_data['description']
+        price = form.cleaned_data['price']
+        image = form.cleaned_data['image']
+        is_availabele = form.cleaned_data['is_available']
+
+        new_product.title = title
+        new_product.category = category
+        new_product.brand = brand
+        new_product.description = description
+        new_product.price = price
+        new_product.image = image
+        new_product.is_available = is_availabele
+        new_product.save()
+        return HttpResponseRedirect(reverse('base'))
+
+    context = {
+        'form': form
+    }
+    return render(request, 'add_product.html', context)
+
+
 @login_required
 def add_comment(request, product_slug):
     comment = request.POST.get('comment')
@@ -350,3 +413,8 @@ def add_comment(request, product_slug):
     comments = ProductComment.objects.filter(product=product)
 
     return HttpResponseRedirect(reverse('product_detail', kwargs={'product_slug': product_slug}))
+
+
+
+
+
