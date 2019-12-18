@@ -32,7 +32,7 @@ def base_view(request):
         'cart': cart,
     }
     return render(request, 'index.html', context)
-    
+
 def category_view(request, category_slug, page=1):
     try:
         cart_id = request.session['cart_id']
@@ -324,6 +324,8 @@ def cabinet_view(request):
     }
     return render(request, 'cabinet.html', context)
 
+def support_page_view(request):
+    return render(request,'support_page.html')
 
 def login_view(request):
     form = LoginForm(request.POST or None)

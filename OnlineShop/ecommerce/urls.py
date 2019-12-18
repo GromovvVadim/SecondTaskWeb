@@ -19,5 +19,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('base')), name='logout'),
     path('add_comment/<str:product_slug>',
          add_comment, name='add_comment'),
+    path('support_page/',support_page_view,name='support_page'),
     path('', base_view, name='base')
 ]
