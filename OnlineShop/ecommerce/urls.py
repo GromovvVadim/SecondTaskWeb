@@ -1,5 +1,6 @@
 from django.urls import path, reverse_lazy
 from django.contrib.auth.views import LogoutView
+from django.conf.urls import url, include
 from .views import *
 
 urlpatterns = [
@@ -20,5 +21,6 @@ urlpatterns = [
     path('add_comment/<str:product_slug>',
          add_comment, name='add_comment'),
     path('support_page/',support_page_view,name='support_page'),
+    url(r'^oauth/', include('social_django.urls', namespace='social')), 
     path('', base_view, name='base')
 ]
