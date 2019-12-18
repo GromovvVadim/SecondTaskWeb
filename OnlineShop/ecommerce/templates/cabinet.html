@@ -1,0 +1,80 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+<h1>Cabinet</h1>
+
+<div class="table-container">
+<table class="table cart-table">
+<tr class="table-header">
+    <td>Id</td>
+    <td>Date</td>
+    <td>Status</td>
+    <td>Price</td>
+    <td>Order details</td>
+</tr>
+
+{% for order in orders %}
+
+<tr>    
+    <td>{{ order.id }}</td>
+    <td>{{ order.date }}</td>
+    <td>{{ order.status }}</td>
+    <td>{{ order.total_price.normalize }} $</td>
+    <td>
+      <button type="button" class="btn btn-primary shadow-none" data-toggle="modal" data-target="#exampleModal-{{ order.id }}">Show details</button>
+    </td>
+</tr>
+
+{% endfor %}
+</table>
+</div>
+
+
+<!-- Modal -->
+{% for order in orders %}
+<div class="modal fade" id="exampleModal-{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Order №{{ order.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <table class="table">
+            <h3>Purchased books</h3>
+            {% for order_item in order.items.items.all %}
+                <tr>
+                    <td>{{ order_item.product.title }}, {{order_item.product.brand}} </td>
+                    <td>{{ order_item.amount }}</td>
+                    <td>{{ order_item.total_price.normalize }} $</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td><b>Total sum: </b></td>
+                <td><b>{{ order.items.total_price.normalize }} $</b></td>
+            </tr>
+        </table>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+{% endblock %}
+

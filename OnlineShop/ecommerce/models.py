@@ -65,13 +65,6 @@ class Product(models.Model):
         ordering = ['title']
 
 
-class ProductComment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
-    comment = models.TextField(verbose_name='Comment')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Book')
-    date = models.DateTimeField(auto_now_add=True, verbose_name='Date')
-
-
 class CartItem(models.Model):
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, verbose_name='Book')
@@ -123,6 +116,7 @@ class Cart(models.Model):
         verbose_name_plural = 'Baskets'
         verbose_name = 'Basket'
 
+
 ORDER_STATUSES = (
     ('Processing', 'Processing'),
     ('Paid', 'Paid'),
@@ -159,3 +153,8 @@ class Order(models.Model):
         return 'Order № ' + str(self.id)
 
 
+class ProductComment(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
+    comment = models.TextField(verbose_name='Comment')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Book')
+    date = models.DateTimeField(auto_now_add=True, verbose_name='Date')

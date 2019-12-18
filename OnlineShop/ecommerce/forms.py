@@ -90,7 +90,6 @@ class OrderForm(forms.Form):
         self.fields['phone'].help_text = "Input real number"
         self.fields['delivery_type'].label = 'The method of obtaining'
         self.fields['address'].label = 'Delivery address'
-        #self.fields['address'].help_text = 'Input real address'
         self.fields['comment'].label = 'Order comment'
         self.fields['date'].label = 'Delivery date'
         self.fields['date'].help_text = 'Delivery takes 2-4 days'
