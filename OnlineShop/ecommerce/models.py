@@ -154,7 +154,7 @@ class Order(models.Model):
 
 
 class ProductComment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Користувач")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Customer")
     comment = models.TextField(verbose_name='Comment')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Book')
     date = models.DateTimeField(auto_now_add=True, verbose_name='Date')

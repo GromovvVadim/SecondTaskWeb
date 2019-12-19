@@ -22,5 +22,6 @@ urlpatterns = [
          add_comment, name='add_comment'),
     path('support_page/',support_page_view,name='support_page'),
     url(r'^oauth/', include('social_django.urls', namespace='social')), 
-    path('', base_view, name='base')
+    path('', base_view, name='base'),
+    url(r'^contact$', email_view)
 ]

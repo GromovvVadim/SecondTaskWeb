@@ -16,8 +16,8 @@
 
         <!--Grid column-->
         <div class="col-md-9 mb-md-0 mb-5">
-            <form id="contact-form" name="contact-form">
-
+            <form id="contact-form" name="contact-form" method="POST" action="/contact">
+                {% csrf_token %} 
                 <!--Grid row-->
                 <div class="row">
 
@@ -71,7 +71,7 @@
             </form>
 
             <div class="text-center text-md-center">
-                <a class="btn btn-primary" >Send</a>
+                <input class ="btn" value="Send" type = "submit" form = "contact-form">
             </div>
             
         </div>

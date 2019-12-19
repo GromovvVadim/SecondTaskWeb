@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, authenticate
@@ -10,7 +10,8 @@ from decimal import Decimal
 from django.core.paginator import Paginator
 from .forms import *
 from django.core.mail import send_mail
-
+from django.conf import settings
+from OnlineShop.settings import ADMIN_EMAIL
 
 def base_view(request):
     try:
@@ -324,6 +325,20 @@ def cabinet_view(request):
 
 def support_page_view(request):
     return render(request,'support_page.html')
+
+def email_view(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        subject = "{0}: {1}".format(name,request.POST.get('subject'))
+        from_email = request.POST.get('email')
+        message = request.POST.get('message')
+        try:
+            send_mail(subject, message, from_email, [ADMIN_EMAIL])
+        except BadHeaderError:
+            return HttpResponse('Invalid header found.')
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        return Http404()
 
 def login_view(request):
     form = LoginForm(request.POST or None)

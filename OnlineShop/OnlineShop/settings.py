@@ -147,3 +147,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+# SMTP settings
+ADMIN_EMAIL = 'vadimgromov1403@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "vadimgromov1403@gmail.com"
+EMAIL_HOST_PASSWORD = "jmxpbdscpmyhkuiy"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
