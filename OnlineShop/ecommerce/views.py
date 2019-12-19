@@ -54,9 +54,6 @@ def category_view(request, category_slug, page=1):
     if ordering == 'title':
         category_products_list = Product.objects.filter(
             category=category).order_by('brand', 'title')
-    if ordering == 'price':
-        category_products_list = Product.objects.filter(
-            category=category).order_by('price', 'price')
     else:
         category_products_list = Product.objects.filter(
             category=category).order_by(ordering)
@@ -76,6 +73,7 @@ def category_view(request, category_slug, page=1):
         'ordering': ordering,
     }
     return render(request, 'category.html', context)
+
 
 
 def product_view(request, product_slug):
